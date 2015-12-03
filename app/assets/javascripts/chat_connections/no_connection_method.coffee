@@ -1,0 +1,1 @@
+throw Error('This is no initialized chat connection...')
