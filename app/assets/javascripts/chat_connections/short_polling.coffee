@@ -13,19 +13,22 @@ refreshChat = () ->
 
 displayMessage = (message) ->
   $messageContainer = $('#messageContainer').clone()
-  fillMessage($messageContainer, message)
   $messageContainer.removeAttr('id')
+  fillMessage($messageContainer, message)
   $('#chatContainer').append($messageContainer)
   $messageContainer.toggle(400)
 
 fillMessage = (container, message) ->
-  container.find('#messageId').html(message.id)
+  messageId = "message_#{message.id}"
+  return if $("##{messageId}").length > 0
+  container.attr('id',"#{messageId}")
   container.find('#username').html(message.username)
   container.find('#message').html(message.content)
   container
 
 ready = ->
   $('#new_message').on 'ajax:success', ->
+    checkNewMessages(new Date().toISOString())
     $('#message_content').val('')
 
   refreshChat()
