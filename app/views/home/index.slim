@@ -2,14 +2,11 @@
 .container.chat.full-height
   .row.full-height
     .col-md-12.messages#chatContainer
-      / .row.message.incoming.own
-      /   .col-md-4.username= "#{Time.zone.now} | Vasya Pupochkin"
-      /   .col-md-8.message= 'Hello, world!'
     .new-message
       = form_for Message.new, remote: true do |f|
         .row
           .col-md-10
-            = f.text_field :content, class: 'form-control full-width'
+            = f.text_field :content, class: 'form-control full-width', required: true
           .col-md-2
             = f.submit 'Send', class: 'btn btn-success full-width', id: 'submit_message_btn'
 

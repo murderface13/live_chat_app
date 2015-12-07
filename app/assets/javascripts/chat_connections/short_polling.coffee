@@ -2,6 +2,7 @@ checkNewMessages = (lastCheckDate) ->
   $.get "/messages?lastCheck=#{lastCheckDate}", (data) ->
     console.log(data)
     data.forEach( (item, i, arr) ->
+      return if $("#message_#{item.id}").length > 0
       displayMessage(item)
     )
     refreshChat()
@@ -20,7 +21,6 @@ displayMessage = (message) ->
 
 fillMessage = (container, message) ->
   messageId = "message_#{message.id}"
-  return if $("##{messageId}").length > 0
   container.attr('id',"#{messageId}")
   container.find('#username').html(message.username)
   container.find('#message').html(message.content)
