@@ -22,7 +22,7 @@ displayMessage = (message) ->
 fillMessage = (container, message) ->
   messageId = "message_#{message.id}"
   container.attr('id',"#{messageId}")
-  container.find('#username').html(message.username)
+  container.find('#username').html(message.username+': ')
   container.find('#message').html(message.content)
   container
 

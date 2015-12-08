@@ -16,6 +16,8 @@ class MessagesController < ApplicationController
   private
 
   def message_params
-    params[:message].permit!
-  end  
+    strong_message_params = params[:message]
+    strong_message_params[:username] = current_user.username
+    strong_message_params.permit!
+  end
 end
