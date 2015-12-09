@@ -21,7 +21,7 @@ ready = ->
 
   showContainer = (container) ->
     $('#chatContainer').append(container)
-    container.show(400)
+    container.slideToggle(400)
 
   $('#new_message').on 'ajax:success', ->
     $('#message_content').val('')
