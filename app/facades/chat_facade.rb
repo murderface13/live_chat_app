@@ -8,7 +8,7 @@ class ChatFacade
   def recent_messages(last_check_date)
     case @connection
     when 'short polling'
-      Message.recent(last_check_date).compact
+      Message.recent_from(last_check_date).compact
     when nil
       fail ArgumentError, 'Connection type was not set'
     else
