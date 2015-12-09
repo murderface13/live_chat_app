@@ -7,7 +7,7 @@ class MessagesController < ApplicationController
   def index
     last_check_date = Time.parse(params[:lastCheck])
     # it assumes that short polling interval is 5 seconds
-    polling_interval = 5
+    polling_interval = params[:interval].to_i
     last_check_date -= polling_interval.seconds
     new_messages = Message.where('created_at >= ?', last_check_date)
     render json: new_messages.to_json
