@@ -2,24 +2,17 @@ refreshInterval = 5000
 
 checkNewMessages = (lastCheckDate) ->
   $.get "/messages?lastCheck=#{lastCheckDate}&interval=#{refreshInterval/1000}", (data) ->
-    console.log(data)
-    data.forEach( (item, i, arr) ->
+    data.forEach((item, i, arr) ->
       return if $("#message_#{item.id}").length > 0
       displayMessage(item)
     )
-    refreshChat()
-
-refreshChat = () ->
-  setTimeout ( ->
-    checkNewMessages(new Date().toISOString())
-  ), refreshInterval
 
 displayMessage = (message) ->
   $messageContainer = $('#messageContainer').clone()
   $messageContainer.removeAttr('id')
   fillMessage($messageContainer, message)
   $('#chatContainer').append($messageContainer)
-  $messageContainer.toggle(400)
+  $messageContainer.show(400)
 
 fillMessage = (container, message) ->
   messageId = "message_#{message.id}"
@@ -33,7 +26,9 @@ ready = ->
     checkNewMessages(new Date().toISOString())
     $('#message_content').val('')
 
-  refreshChat()
+  setInterval ( ->
+    checkNewMessages(new Date().toISOString())
+  ), refreshInterval
 
 $(document).ready(ready)
 $(document).on('page:load', ready)
