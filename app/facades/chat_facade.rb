@@ -3,15 +3,15 @@ class ChatFacade
 
   def initialize(connection)
     @connection = connection
+    @last_id = last_id
   end
 
-  # TODO: refactor getting recent messages by ids
-  def recent_messages(last_check_date)
+  def recent_messages
     case @connection
     when 'short polling'
-      recent_messages_from(last_check_date)
+      last_messages
     when 'long polling'
-      long_poll(last_check_date)
+      long_poll
     when nil
       fail ArgumentError, 'Connection type was not set'
     else
@@ -21,17 +21,22 @@ class ChatFacade
 
   private
 
-  def recent_messages_from(last_check_date)
-    Message.recent_from(last_check_date).compact
+  def last_id
+    Message.last.id
   end
 
-  def long_poll(last_check_date)
+  def last_messages
+    Message.where('id > ?', @last_id).compact
+  end
+
+  def long_poll
+    new_messages = []
     10.times do
       ActiveRecord::Base.clear_all_connections!
-      new_messages = recent_messages_from(last_check_date)
-      puts "======LAST MESSAGE CREATED AT #{Message.last.created_at}======"
+      new_messages = last_messages
       return new_messages if new_messages.any?
-      sleep 3
+      sleep 1
     end
+    new_messages
   end
 end

@@ -1,5 +1,4 @@
 class MessagesController < ApplicationController
-
   before_action :init_response_processor, only: [:index]
 
   def create
@@ -9,17 +8,12 @@ class MessagesController < ApplicationController
   end
 
   def index
-    recent_messages = @response_processor.recent_messages(last_check_date)
+    # recent_messages = @response_processor.recent_messages(last_check_date)
+    recent_messages = @response_processor.recent_messages
     render json: recent_messages.to_json
   end
 
   private
-
-  def last_check_date
-    last_check_date = Time.parse(params[:lastCheck])
-    polling_interval = params[:interval].to_i
-    last_check_date - polling_interval.seconds
-  end
 
   def message_params
     strong_message_params = params[:message]
