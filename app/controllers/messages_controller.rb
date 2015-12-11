@@ -22,6 +22,6 @@ class MessagesController < ApplicationController
   end
 
   def init_response_processor
-    @response_processor = ChatFacade.new(session[:connection_method])
+    @response_processor = ChatFacade.new(session[:connection_method], params[:lastId])
   end
 end

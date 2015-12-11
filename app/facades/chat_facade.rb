@@ -1,9 +1,9 @@
 class ChatFacade
   attr_reader :connection
 
-  def initialize(connection)
+  def initialize(connection, last_message_id)
     @connection = connection
-    @last_id = last_id
+    @last_id = last_id(last_message_id)
   end
 
   def recent_messages
@@ -21,21 +21,26 @@ class ChatFacade
 
   private
 
-  def last_id
-    Message.last.id
+  def last_id(id)
+    int_id = id.to_i
+    int_id == 0 ? $redis['last_message_id'].to_i - 5 : int_id
   end
 
   def last_messages
-    Message.where('id > ?', @last_id).compact
+    messages = JSON.parse($redis['last_messages'])
+    last_messages = []
+    messages.each do |message|
+      last_messages << message if message['id'] > @last_id
+    end
+    last_messages
   end
 
   def long_poll
     new_messages = []
     10.times do
-      ActiveRecord::Base.clear_all_connections!
       new_messages = last_messages
       return new_messages if new_messages.any?
-      sleep 1
+      sleep 5
     end
     new_messages
   end

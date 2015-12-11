@@ -1,8 +1,7 @@
 refreshInterval = 5000
 
 checkNewMessages = (lastCheckDate) ->
-  refreshInSeconds = refreshInterval / 1000
-  $.get "/messages?lastCheck=#{lastCheckDate}&interval=#{refreshInSeconds}", (data) ->
+  $.get "/messages?lastId=#{lastId()}", (data) ->
     data.forEach((item, i, arr) ->
       displayChatMessage(item)
     )

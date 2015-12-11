@@ -1,6 +1,6 @@
 ready = ->
   checkNewMessages = ->
-    $.get "/messages", (data) ->
+    $.get "/messages?lastId=#{lastId()}", (data) ->
       data.forEach((item, i, arr) ->
         displayChatMessage(item)
       )

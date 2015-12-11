@@ -5,6 +5,11 @@ ready = ->
     $container = fillMessage($container, message)
     showContainer($container)
 
+  window.lastId = ->
+    allMessages = $('.message')
+    return 0 if allMessages.length < 2
+    allMessages[allMessages.length - 2].id.split('_')[1]
+
   messageFieldId = (id) ->
     "message_#{id}"
 

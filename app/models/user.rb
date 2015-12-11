@@ -16,6 +16,16 @@ class User < ActiveRecord::Base
     'long polling'
   ]
 
+
+  after_save :invalidate_cache
+  def self.serialize_from_session(key, salt)
+    single_key = key.is_a?(Array) ? key.first : key
+    Rails.cache.fetch("user:#{single_key}") do
+       User.where(:id => single_key).entries.first
+    end
+  end
+
+
   def email_required?
     false
   end
@@ -23,4 +33,9 @@ class User < ActiveRecord::Base
   def email_changed?
     false
   end
+
+  private
+    def invalidate_cache
+      Rails.cache.delete("user:#{id}")
+    end
 end
