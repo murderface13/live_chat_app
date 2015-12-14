@@ -1,17 +1,24 @@
+require 'polling/short_polling'
+require 'polling/long_polling'
+
 class ChatFacade
   attr_reader :connection
 
+  CHAT_HISTORY_LENGTH = 5
+
   def initialize(connection, last_message_id)
     @connection = connection
-    @last_id = last_id(last_message_id)
+    @last_id = last_message_id
+    @short_polling = ShortPolling
+    @long_polling = LongPolling
   end
 
   def recent_messages
     case @connection
     when 'short polling'
-      last_messages
+      @short_polling.recent_messages(@last_id)
     when 'long polling'
-      long_poll
+      @long_polling.recent_messages(@last_id)
     when nil
       fail ArgumentError, 'Connection type was not set'
     else
@@ -23,25 +30,6 @@ class ChatFacade
 
   def last_id(id)
     int_id = id.to_i
-    int_id == 0 ? $redis['last_message_id'].to_i - 5 : int_id
-  end
-
-  def last_messages
-    messages = JSON.parse($redis['last_messages'])
-    last_messages = []
-    messages.each do |message|
-      last_messages << message if message['id'] > @last_id
-    end
-    last_messages
-  end
-
-  def long_poll
-    new_messages = []
-    10.times do
-      new_messages = last_messages
-      return new_messages if new_messages.any?
-      sleep 5
-    end
-    new_messages
+    int_id == 0 ? $redis['last_message_id'].to_i - CHAT_HISTORY_LENGTH : int_id
   end
 end

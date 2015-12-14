@@ -1,17 +1,17 @@
 refreshInterval = 5000
 
-checkNewMessages = (lastCheckDate) ->
+checkNewMessages = ->
   $.get "/messages?lastId=#{lastId()}", (data) ->
-    data.forEach((item, i, arr) ->
+    data.forEach( (item) ->
       displayChatMessage(item)
     )
 
 ready = ->
   $('#new_message').on 'ajax:success', ->
-    checkNewMessages(new Date().toISOString())
+    checkNewMessages()
 
   setInterval ( ->
-    checkNewMessages(new Date().toISOString())
+    checkNewMessages()
   ), refreshInterval
 
 $(document).ready(ready)

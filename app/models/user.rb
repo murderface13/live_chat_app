@@ -16,7 +16,6 @@ class User < ActiveRecord::Base
     'long polling'
   ]
 
-
   after_save :invalidate_cache
   def self.serialize_from_session(key, salt)
     single_key = key.is_a?(Array) ? key.first : key
