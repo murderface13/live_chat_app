@@ -28,9 +28,6 @@ class MessagesController < ApplicationController
       on.message do |_, data|
         response.stream.write("data: #{data}\n\n")
       end
-      on.close do
-        redis.quit
-      end
     end
     render nothing: true
   rescue IOError
