@@ -1,8 +1,8 @@
 ready = ->
   source = new EventSource('/messages/events')
-  source.addEventListener 'messages.create', (e) ->
-    alert(parseJSON(e.data))
-  console.log(source)
+  source.onmessage = (e) ->
+    message = JSON.parse(e.data)
+    displayChatMessage(message)
 
 $(document).ready(ready)
 $(document).on('page:load', ready)

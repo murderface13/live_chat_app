@@ -9,8 +9,8 @@ class MessagesController < ApplicationController
     message = Message.create(message_params)
 
     status = message.errors.any? ? 500 : 204
+    response.headers["Content-Type"] = "text/event-stream"
     $redis.publish('messages.create', message.to_json)
-    binding.pry
 
     render nothing: true, status: status
   end
@@ -22,20 +22,22 @@ class MessagesController < ApplicationController
   end
 
   def events
-    response.headers['Content-Type'] = 'text/event-stream'
-    sse = Streamer::SSE.new(response.stream)
+    response.headers['Content-Type'] = "text/event-stream"
     redis = Redis.new
-    redis.subscribe('messages.create') do |on|
-      on.message do |event, data|
+    redis.subscribe('live_chat_app:messages.create') do |on|
+      on.message do |_, data|
         response.stream.write("data: #{data}\n\n")
+      end
+      on.close do
+        redis.quit
       end
     end
     render nothing: true
-    rescue IOError
-      # Client disconnected
-    ensure
-      redis.quit
-      sse.close
+  rescue IOError
+    logger.info 'Stream closed'
+  ensure
+    redis.quit
+    response.stream.close
   end
 
   private
