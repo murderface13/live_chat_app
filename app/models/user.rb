@@ -13,7 +13,8 @@ class User < ActiveRecord::Base
   # TODO: move to Chatable module
   CHAT_CONNECTION_METHODS = [
     'short polling',
-    'long polling'
+    'long polling',
+    'http streaming'
   ]
 
   after_save :invalidate_cache
