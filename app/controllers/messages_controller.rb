@@ -18,7 +18,7 @@ class MessagesController < ApplicationController
 
   def events
     response.headers['Content-Type'] = 'text/event-stream'
-    @new_message_processor.subscribe
+    @new_message_processor.subscribe!
     render nothing: true
   end
 

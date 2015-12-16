@@ -1,6 +1,8 @@
 require 'polling/short_polling'
 require 'polling/long_polling'
 
+# MessagesFacade needs to declare control to destination classes
+# depends on polling connection method
 class MessagesFacade
   attr_reader :connection
 

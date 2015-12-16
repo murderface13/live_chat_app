@@ -7,6 +7,7 @@ checkNewMessages = ->
     )
 
 ready = ->
+  # chech new messages for show new message after form submit
   $('#new_message').on 'ajax:success', ->
     checkNewMessages()
 
