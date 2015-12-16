@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       get :events
     end
   end
+
+  match "/websocket", :to => ActionCable.server, via: [:get, :post]
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

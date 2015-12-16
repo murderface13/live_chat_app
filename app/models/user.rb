@@ -14,7 +14,8 @@ class User < ActiveRecord::Base
   CHAT_CONNECTION_METHODS = [
     'short polling',
     'long polling',
-    'http streaming'
+    'http streaming',
+    'web socket'
   ]
 
   after_save :invalidate_cache
