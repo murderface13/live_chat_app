@@ -1,40 +1,25 @@
-require 'streamer/sse'
-
 class MessagesController < ApplicationController
   include ActionController::Live
 
-  before_action :init_response_processor, only: [:index]
+  before_action :init_messages_processor, only: [:index]
+  before_action :init_new_message_processor, only: [:create, :events]
 
   def create
     message = Message.create(message_params)
-
-    status = message.errors.any? ? 500 : 204
-    response.headers["Content-Type"] = "text/event-stream"
-    $redis.publish('messages.create', message.to_json)
-
+    status = message.errors.blank? ? 204 : 500
+    @new_message_processor.publish(message) if message.errors.blank?
     render nothing: true, status: status
   end
 
   def index
-    # recent_messages = @response_processor.recent_messages(last_check_date)
-    recent_messages = @response_processor.recent_messages
+    recent_messages = @messages_processor.recent_messages
     render json: recent_messages.to_json
   end
 
   def events
-    response.headers['Content-Type'] = "text/event-stream"
-    redis = Redis.new
-    redis.subscribe('live_chat_app:messages.create') do |on|
-      on.message do |_, data|
-        response.stream.write("data: #{data}\n\n")
-      end
-    end
+    response.headers['Content-Type'] = 'text/event-stream'
+    @new_message_processor.subscribe
     render nothing: true
-  rescue IOError
-    logger.info 'Stream closed'
-  ensure
-    redis.quit
-    response.stream.close
   end
 
   private
@@ -45,7 +30,11 @@ class MessagesController < ApplicationController
     strong_message_params.permit!
   end
 
-  def init_response_processor
-    @response_processor = ChatFacade.new(session[:connection_method], params[:lastId])
+  def init_messages_processor
+    @messages_processor = MessagesFacade.new(session[:connection_method], params[:lastId])
+  end
+
+  def init_new_message_processor
+    @new_message_processor = NewMessageFacade.new(session[:connection_method], response.stream)
   end
 end

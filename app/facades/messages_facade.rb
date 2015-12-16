@@ -1,7 +1,7 @@
 require 'polling/short_polling'
 require 'polling/long_polling'
 
-class ChatFacade
+class MessagesFacade
   attr_reader :connection
 
   CHAT_HISTORY_LENGTH = 5
