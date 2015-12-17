@@ -12,3 +12,7 @@
             = f.submit 'Send', class: 'btn btn-success full-width', id: 'submit_message_btn'
 
 = render 'shared/chat_message'
+
+/ pass current user username to js
+javascript:
+  current_username = "#{current_user.username}"

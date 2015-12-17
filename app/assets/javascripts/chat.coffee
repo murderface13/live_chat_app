@@ -31,6 +31,7 @@ ready = ->
     container.attr('id', messageFieldId(message.id))
     container.find('#username').html(message.username+': ')
     container.find('#message').html(message.content)
+    container.addClass('own') if message.username == current_username
     container
 
   showContainer = (container) ->
