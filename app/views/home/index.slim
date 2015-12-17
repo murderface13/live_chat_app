@@ -1,5 +1,6 @@
 = include_chat_client_code
 .container.chat.full-height
+  = "Hi! Your connection is: #{session[:connection_method]}"
   .row.full-height
     .col-md-12.messages#chatContainer
     .new-message

@@ -10,12 +10,8 @@ class NewMessageFacade
   end
 
   def publish(message)
-    case @connection
-    when 'http streaming'
-      @sse.publish(message)
-    when 'web socket'
-      @websocket.publish(message)
-    end
+    @sse.publish(message)
+    @websocket.publish(message)
   end
 
   def subscribe!
